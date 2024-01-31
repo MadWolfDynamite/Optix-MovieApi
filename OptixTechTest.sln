@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Optix.API", "Optix.API\Opti
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Optix.Domain", "Optix.Domain\Optix.Domain.csproj", "{DF7A93AE-89DD-4E18-AAB4-AC35A0A8116E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Optix.Repository", "Optix.Repository\Optix.Repository.csproj", "{91C19E4F-4AC8-4989-9B82-D60DCA2AD124}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{DF7A93AE-89DD-4E18-AAB4-AC35A0A8116E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF7A93AE-89DD-4E18-AAB4-AC35A0A8116E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DF7A93AE-89DD-4E18-AAB4-AC35A0A8116E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91C19E4F-4AC8-4989-9B82-D60DCA2AD124}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91C19E4F-4AC8-4989-9B82-D60DCA2AD124}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91C19E4F-4AC8-4989-9B82-D60DCA2AD124}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91C19E4F-4AC8-4989-9B82-D60DCA2AD124}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
