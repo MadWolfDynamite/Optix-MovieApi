@@ -2,7 +2,6 @@
 using Optix.Domain.Models;
 using Optix.Repository.Contexts;
 using Optix.Repository.Interfaces;
-using System.Linq;
 using System.Linq.Expressions;
 
 namespace Optix.API.Persistence.Repositories

@@ -10,6 +10,8 @@ namespace Optix.API.Services
 
         private int m_Page, m_Limit;
 
+        private int Offset { get => (m_Page - 1) * m_Limit; }
+
         public int Page { get => m_Page; set => m_Page = value; }
         public int ItemLimit { get => m_Limit; set => m_Limit = value; }
 
@@ -31,15 +33,19 @@ namespace Optix.API.Services
             return await m_MovieRepository.GetAsync(id);
         }
 
-        public Task<IEnumerable<Movie>> GetByTitleAsync(string title)
+        public async Task<IEnumerable<Movie>> GetByTitleAsync(string title)
         {
-            throw new NotImplementedException();
+            var movies = await m_MovieRepository.FindAsync(m => m.Title.StartsWith(title), 0);
+            movies = movies.Skip(Offset);
+
+            return m_Limit > 0
+                ? movies.Take(m_Limit) 
+                : movies;
         }
 
         public async Task<IEnumerable<Movie>> ListAsync()
         {
-            var offset = (m_Page - 1) * m_Limit;
-            return await m_MovieRepository.FindAsync(m => m.Id > offset, m_Limit);
+            return await m_MovieRepository.FindAsync(m => m.Id > Offset, m_Limit);
         }
     }
 }
