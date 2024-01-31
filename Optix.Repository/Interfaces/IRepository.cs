@@ -6,6 +6,7 @@ namespace Optix.Repository.Interfaces
     {
         Task<T> GetAsync(long id);
         Task<IEnumerable<T>> GetAllAsync();
-        Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate);
+        Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate, int limit);
+        Task<int> CountAsync();
     }
 }

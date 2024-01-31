@@ -1,5 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+using Optix.API.Persistence.Repositories;
+using Optix.API.Services;
+using Optix.Domain.Models;
+using Optix.Domain.Services;
 using Optix.Repository.Contexts;
+using Optix.Repository.Interfaces;
 using Optix.Repository.Seeding;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +22,13 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Add Repo Depedencies
+builder.Services.AddScoped<IRepository<Movie>, MovieRepository>();
+builder.Services.AddScoped<IRepository<Genre>, GenreRepository>();
+
+builder.Services.AddScoped<IMovieService, MovieService>();
+builder.Services.AddScoped<IGenreService, GenreService>();
 
 var app = builder.Build();
 

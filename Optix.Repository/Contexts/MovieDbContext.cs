@@ -9,5 +9,10 @@ namespace Optix.Repository.Contexts
         public DbSet<Genre> Genres { get; set; }
 
         public MovieDbContext(DbContextOptions<MovieDbContext> options) : base(options) { }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Movie>().HasMany(g => g.Genres).WithOne(m => m.Movie);
+        }
     }
 }

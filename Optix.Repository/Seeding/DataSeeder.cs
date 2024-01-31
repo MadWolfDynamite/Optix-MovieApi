@@ -14,8 +14,8 @@ namespace Optix.Repository.Seeding
 
             var resourceName = @$"..\Optix.{nameof(Domain)}\SeedData\mymoviedb.csv";
 
-            using var reader = new StreamReader(resourceName, Encoding.UTF8);
-            using var csvReader = new CsvReader(reader, CultureInfo.InvariantCulture);
+            using StreamReader reader = new(resourceName, Encoding.UTF8);
+            using CsvReader csvReader = new(reader, CultureInfo.InvariantCulture);
 
             while (csvReader.Read())
             {
