@@ -21,7 +21,7 @@ namespace Optix.Repository.Seeding
             {
                 var movie = csvReader.GetRecord<Movie>();
 
-                var genres = csvReader.GetField<string>("Genre").Split(',').Select(g => new Genre { Name = g, Movie = movie }).ToList();
+                var genres = csvReader.GetField<string>("Genre").Split(',').Select(g => new Genre { Name = g.Trim(), MovieId = movie.Id }).ToList();
                 movie.Genres = genres;
 
                 context.Add(movie);

@@ -7,6 +7,6 @@ namespace Optix.Domain.Models
         public long Id { get; set; }
         public string Name { get; set; }
 
-        public Movie Movie { get; set; }
+        public long MovieId { get; set; }
     }
 }

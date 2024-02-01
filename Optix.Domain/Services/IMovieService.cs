@@ -1,4 +1,5 @@
 ﻿using Optix.Domain.Models;
+using Optix.Domain.Services.Communication;
 
 namespace Optix.Domain.Services
 {
@@ -7,9 +8,9 @@ namespace Optix.Domain.Services
         int Page { get; set; }
         int ItemLimit { get; set; }
 
-        Task<IEnumerable<Movie>> ListAsync();
+        Task<SearchResponse<IEnumerable<Movie>>> ListAsync();
         Task<Movie> GetByIdAsync(long id);
-        Task<IEnumerable<Movie>> GetByTitleAsync(string title);
-        Task<IEnumerable<Movie>> GetByGenreAsync(string genre);
+        Task<SearchResponse<IEnumerable<Movie>>> GetByTitleAsync(string title);
+        Task<SearchResponse<IEnumerable<Movie>>> GetByGenreAsync(string genre);
     }
 }

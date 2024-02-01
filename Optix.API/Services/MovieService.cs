@@ -1,5 +1,6 @@
 ﻿using Optix.Domain.Models;
 using Optix.Domain.Services;
+using Optix.Domain.Services.Communication;
 using Optix.Repository.Interfaces;
 
 namespace Optix.API.Services
@@ -23,7 +24,7 @@ namespace Optix.API.Services
             m_Limit = 0;
         }
 
-        public Task<IEnumerable<Movie>> GetByGenreAsync(string genre)
+        public Task<SearchResponse<IEnumerable<Movie>>> GetByGenreAsync(string genre)
         {
             throw new NotImplementedException();
         }
@@ -33,19 +34,33 @@ namespace Optix.API.Services
             return await m_MovieRepository.GetAsync(id);
         }
 
-        public async Task<IEnumerable<Movie>> GetByTitleAsync(string title)
+        public async Task<SearchResponse<IEnumerable<Movie>>> GetByTitleAsync(string title)
         {
-            var movies = await m_MovieRepository.FindAsync(m => m.Title.StartsWith(title), 0);
-            movies = movies.Skip(Offset);
+            try
+            {
+                var query = title.ToLower();
+                var movies = await m_MovieRepository.FindAsync(m => m.Title.ToLower().StartsWith(query), 0);
+                var count = movies.Count();
 
-            return m_Limit > 0
-                ? movies.Take(m_Limit) 
-                : movies;
+                movies = movies.Skip(Offset);
+
+                if (m_Limit > 0)
+                    movies = movies.Take(m_Limit);
+
+                return new SearchResponse<IEnumerable<Movie>>(count, movies);
+            }
+            catch (Exception ex)
+            {
+                return new SearchResponse<IEnumerable<Movie>>(ex);
+            }
         }
 
-        public async Task<IEnumerable<Movie>> ListAsync()
+        public async Task<SearchResponse<IEnumerable<Movie>>> ListAsync()
         {
-            return await m_MovieRepository.FindAsync(m => m.Id > Offset, m_Limit);
+            var movies = await m_MovieRepository.FindAsync(m => m.Id > Offset, m_Limit);
+            var count = await m_MovieRepository.CountAsync();
+
+            return new SearchResponse<IEnumerable<Movie>>(count, movies);
         }
     }
 }

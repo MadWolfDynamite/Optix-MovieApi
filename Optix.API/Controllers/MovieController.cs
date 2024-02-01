@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Optix.Domain.Models;
 using Optix.Domain.Services;
+using Optix.Domain.Services.Communication;
 
 namespace Optix.API.Controllers
 {
@@ -19,22 +20,38 @@ namespace Optix.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Movie>> GetAllAsync(int page = 1, int itemsPerPage = 25)
+        public async Task<IActionResult> GetAllAsync(int page = 1, int itemsPerPage = 25)
         {
             SetPagingConfiguration(page, itemsPerPage);
 
-            var movies = await m_MovieService.ListAsync();
-            return await m_GenreService.GetAllLinkedGenresAsync(movies);
+            var searchResponse = await m_MovieService.ListAsync();
+
+            if (!searchResponse.IsSuccess)
+                return BadRequest(searchResponse.Message);
+
+            var result = await m_GenreService.GetAllLinkedGenresAsync(searchResponse.Data);
+
+            return result.IsSuccess
+                ? Ok(new { searchResponse.Count, Items = result.Data })
+                : BadRequest(result.Message);
         }
 
         [Route("Search/Title")]
         [HttpGet]
-        public async Task<IEnumerable<Movie>> GetByTitle(string title, int page = 1, int itemsPerPage = 25)
+        public async Task<IActionResult> GetByTitle(string query, int page = 1, int itemsPerPage = 25)
         {
             SetPagingConfiguration(page, itemsPerPage);
 
-            var movies = await m_MovieService.GetByTitleAsync(title);
-            return await m_GenreService.GetAllLinkedGenresAsync(movies);
+            var searchResponse = await m_MovieService.GetByTitleAsync(query);
+
+            if (!searchResponse.IsSuccess)
+                return BadRequest(searchResponse.Message);
+
+            var result = await m_GenreService.GetAllLinkedGenresAsync(searchResponse.Data);
+
+            return result.IsSuccess
+                ? Ok(new { searchResponse.Count, Items = result.Data })
+                : BadRequest(result.Message);
         }
 
         private void SetPagingConfiguration(int page, int itemsPerPage)

@@ -1,5 +1,6 @@
 ﻿using Optix.Domain.Models;
 using Optix.Domain.Services;
+using Optix.Domain.Services.Communication;
 using Optix.Repository.Interfaces;
 
 namespace Optix.API.Services
@@ -15,10 +16,10 @@ namespace Optix.API.Services
 
         public async Task<IEnumerable<Genre>> GetAllGenresForMovieAsync(long movieId)
         {
-            return await m_GenreRepository.FindAsync(genre => genre.Movie.Id == movieId, 0);
+            return await m_GenreRepository.FindAsync(genre => genre.MovieId == movieId, 0);
         }
 
-        public async Task<IEnumerable<Movie>> GetAllLinkedGenresAsync(IEnumerable<Movie> movies)
+        public async Task<ServiceResponse<IEnumerable<Movie>>> GetAllLinkedGenresAsync(IEnumerable<Movie> movies)
         {
             foreach (var movie in movies)
             {
@@ -26,7 +27,7 @@ namespace Optix.API.Services
                 movie.Genres = genres.ToList();
             }
 
-            return movies;
+            return new ServiceResponse<IEnumerable<Movie>>(movies);
         }
     }
 }
