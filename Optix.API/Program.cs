@@ -25,10 +25,7 @@ builder.Services.AddSwaggerGen();
 
 // Add Repo Depedencies
 builder.Services.AddScoped<IRepository<Movie>, MovieRepository>();
-builder.Services.AddScoped<IRepository<Genre>, GenreRepository>();
-
 builder.Services.AddScoped<IMovieService, MovieService>();
-builder.Services.AddScoped<IGenreService, GenreService>();
 
 var app = builder.Build();
 

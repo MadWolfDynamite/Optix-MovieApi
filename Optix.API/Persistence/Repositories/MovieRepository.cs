@@ -17,7 +17,7 @@ namespace Optix.API.Persistence.Repositories
 
         public async Task<int> CountAsync()
         {
-            return await m_Context.Set<Movie>().CountAsync();
+            return await m_Context.Set<Movie>().IgnoreAutoIncludes().CountAsync();
         }
 
         public async Task<IEnumerable<Movie>> FindAsync(Expression<Func<Movie, bool>> predicate, int limit)
