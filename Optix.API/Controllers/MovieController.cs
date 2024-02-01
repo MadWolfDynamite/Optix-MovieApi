@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Optix.Domain.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using Optix.Domain.Services;
-using Optix.Domain.Services.Communication;
 
 namespace Optix.API.Controllers
 {
@@ -43,6 +40,24 @@ namespace Optix.API.Controllers
             SetPagingConfiguration(page, itemsPerPage);
 
             var searchResponse = await m_MovieService.GetByTitleAsync(query);
+
+            if (!searchResponse.IsSuccess)
+                return BadRequest(searchResponse.Message);
+
+            var result = await m_GenreService.GetAllLinkedGenresAsync(searchResponse.Data);
+
+            return result.IsSuccess
+                ? Ok(new { searchResponse.Count, Items = result.Data })
+                : BadRequest(result.Message);
+        }
+
+        [Route("Search/Genre")]
+        [HttpGet]
+        public async Task<IActionResult> GetByGenre(string query, int page = 1, int itemsPerPage = 25)
+        {
+            SetPagingConfiguration(page, itemsPerPage);
+
+            var searchResponse = await m_MovieService.GetByGenreAsync(query);
 
             if (!searchResponse.IsSuccess)
                 return BadRequest(searchResponse.Message);

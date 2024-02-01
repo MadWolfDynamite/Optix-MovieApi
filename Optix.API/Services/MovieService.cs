@@ -24,9 +24,26 @@ namespace Optix.API.Services
             m_Limit = 0;
         }
 
-        public Task<SearchResponse<IEnumerable<Movie>>> GetByGenreAsync(string genre)
+        public async Task<SearchResponse<IEnumerable<Movie>>> GetByGenreAsync(string genre)
         {
-            throw new NotImplementedException();
+            var query = genre.ToLower();
+
+            try
+            {
+                var movies = await m_MovieRepository.FindAsync(m => m.Genres.Any(g => g.Name.ToLower().StartsWith(query)), 0);
+                var count = movies.Count();
+
+                movies = movies.Skip(Offset);
+
+                if (m_Limit > 0)
+                    movies = movies.Take(m_Limit);
+
+                return new SearchResponse<IEnumerable<Movie>>(count, movies);
+            }
+            catch (Exception ex)
+            {
+                return new SearchResponse<IEnumerable<Movie>>(ex.Message);
+            }
         }
 
         public async Task<Movie> GetByIdAsync(long id)
@@ -36,9 +53,10 @@ namespace Optix.API.Services
 
         public async Task<SearchResponse<IEnumerable<Movie>>> GetByTitleAsync(string title)
         {
+            var query = title.ToLower();
+
             try
             {
-                var query = title.ToLower();
                 var movies = await m_MovieRepository.FindAsync(m => m.Title.ToLower().StartsWith(query), 0);
                 var count = movies.Count();
 
