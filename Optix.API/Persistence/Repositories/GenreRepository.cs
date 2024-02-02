@@ -20,14 +20,17 @@ namespace Optix.API.Persistence.Repositories
             return m_Context.Set<Genre>().CountAsync();
         }
 
-        public async Task<IEnumerable<Genre>> FindAsync(Expression<Func<Genre, bool>> predicate, int limit)
+        public async Task<IEnumerable<Genre>> FindAsync(Expression<Func<Genre, bool>> predicate, int limit, string sortMember, string sortOrder)
         {
-            return limit > 0
-                ? await m_Context.Set<Genre>().Where(predicate).Take(limit).ToListAsync()
-                : await m_Context.Set<Genre>().Where(predicate).ToListAsync();
+            var dbSet = m_Context.Set<Genre>().Where(predicate);
+
+            if (limit > 0)
+                dbSet = dbSet.Take(limit);
+
+            return await dbSet.ToListAsync();
         }
 
-        public async Task<IEnumerable<Genre>> GetAllAsync()
+        public async Task<IEnumerable<Genre>> GetAllAsync(string sortMember, string sortOrder)
         {
             return await m_Context.Set<Genre>().ToListAsync();
         }

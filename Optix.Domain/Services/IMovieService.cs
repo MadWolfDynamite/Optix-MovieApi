@@ -8,6 +8,9 @@ namespace Optix.Domain.Services
         int Page { get; set; }
         int ItemLimit { get; set; }
 
+        string SortBy { get; set; }
+        string SortOrder { get; set; }
+
         Task<SearchResponse<IEnumerable<Movie>>> ListAsync();
         Task<Movie> GetByIdAsync(long id);
         Task<SearchResponse<IEnumerable<Movie>>> GetByTitleAsync(string title);

@@ -2,6 +2,7 @@
 using Optix.Domain.Models;
 using Optix.Repository.Contexts;
 using Optix.Repository.Interfaces;
+using System.Data;
 using System.Linq.Expressions;
 
 namespace Optix.API.Persistence.Repositories
@@ -20,21 +21,52 @@ namespace Optix.API.Persistence.Repositories
             return await m_Context.Set<Movie>().IgnoreAutoIncludes().CountAsync();
         }
 
-        public async Task<IEnumerable<Movie>> FindAsync(Expression<Func<Movie, bool>> predicate, int limit)
+        public async Task<IEnumerable<Movie>> FindAsync(Expression<Func<Movie, bool>> predicate, int limit, string sortMember, string sortOrder)
         {
-            return limit > 0
-                ? await m_Context.Set<Movie>().Where(predicate).Take(limit).ToListAsync()
-                : await m_Context.Set<Movie>().Where(predicate).ToListAsync();
+            var dbSet = m_Context.Set<Movie>().Where(predicate);
+
+            dbSet = SortMovies(dbSet, sortMember, sortOrder);
+
+            if (limit > 0)
+                dbSet = dbSet.Take(limit);
+
+            return await dbSet.ToListAsync();
         }
 
-        public async Task<IEnumerable<Movie>> GetAllAsync()
+        public async Task<IEnumerable<Movie>> GetAllAsync(string sortMember, string sortOrder)
         {
-            return await m_Context.Set<Movie>().ToListAsync();
+            var dbSet = m_Context.Set<Movie>().AsQueryable();
+
+            dbSet = SortMovies(dbSet, sortMember, sortOrder);
+
+            return await dbSet.ToListAsync();
         }
 
         public async Task<Movie> GetAsync(long id)
         {
             return await m_Context.Set<Movie>().FindAsync(id);
+        }
+
+        private static IQueryable<Movie> SortMovies(IQueryable<Movie> dbSet, string sortMember, string sortOrder)
+        {
+            switch (sortMember.ToLower())
+            {
+                case "title":
+                case "name":
+                    dbSet = sortOrder.ToLower().Equals("desc")
+                        ? dbSet.OrderByDescending(m => m.Title)
+                        : dbSet.OrderBy(m => m.Title);
+                    break;
+                case "releasedate":
+                case "release_date":
+                case "date":
+                    dbSet = sortOrder.ToLower().Equals("desc")
+                        ? dbSet.OrderByDescending(m => m.ReleaseDate)
+                        : dbSet.OrderBy(m => m.ReleaseDate);
+                    break;
+            }
+
+            return dbSet;
         }
     }
 }

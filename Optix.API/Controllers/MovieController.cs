@@ -17,9 +17,10 @@ namespace Optix.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync(int page = 1, int itemsPerPage = 25)
+        public async Task<IActionResult> GetAllAsync([FromQuery] PagingSortingParameters parameters)
         {
-            SetPagingConfiguration(page, itemsPerPage);
+            SetPagingConfiguration(parameters.Page, parameters.ItemsPerPage);
+            SetSortingConfiguration(parameters.Sort, parameters.Order);
 
             var searchResponse = await m_MovieService.ListAsync();
 
@@ -30,9 +31,10 @@ namespace Optix.API.Controllers
 
         [Route("Search/Title")]
         [HttpGet]
-        public async Task<IActionResult> GetByTitle(string query, int page = 1, int itemsPerPage = 25)
+        public async Task<IActionResult> GetByTitle(string query, [FromQuery] PagingSortingParameters parameters)
         {
-            SetPagingConfiguration(page, itemsPerPage);
+            SetPagingConfiguration(parameters.Page, parameters.ItemsPerPage);
+            SetSortingConfiguration(parameters.Sort, parameters.Order);
 
             var searchResponse = await m_MovieService.GetByTitleAsync(query);
 
@@ -43,9 +45,10 @@ namespace Optix.API.Controllers
 
         [Route("Search/Genre")]
         [HttpGet]
-        public async Task<IActionResult> GetByGenre(string query, int page = 1, int itemsPerPage = 25)
+        public async Task<IActionResult> GetByGenre(string query, [FromQuery] PagingSortingParameters parameters)
         {
-            SetPagingConfiguration(page, itemsPerPage);
+            SetPagingConfiguration(parameters.Page, parameters.ItemsPerPage);
+            SetSortingConfiguration(parameters.Sort, parameters.Order);
 
             var searchResponse = await m_MovieService.GetByGenreAsync(query);
 
@@ -58,6 +61,12 @@ namespace Optix.API.Controllers
         {
             m_MovieService.Page = page;
             m_MovieService.ItemLimit = itemsPerPage;
+        }
+
+        private void SetSortingConfiguration(string sort, string order)
+        {
+            m_MovieService.SortBy = sort ?? string.Empty;
+            m_MovieService.SortOrder = order;
         }
     }
 }
